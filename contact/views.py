@@ -1,7 +1,5 @@
-import json
 import logging
 from datetime import datetime, timezone
-
 import requests
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives

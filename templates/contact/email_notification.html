@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>New Form Submission</title></head>
+<body style="margin:0;padding:0;background:#f5f2ec;font-family:'DM Sans',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 20px;">
+  <tr><td align="center">
+    <table width="100%" style="max-width:580px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #ddd8cf;">
+
+      <!-- Header -->
+      <tr><td style="background:#0d0d0d;padding:28px 36px;">
+        <p style="margin:0;color:rgba(255,255,255,0.5);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;font-family:Arial,sans-serif;">FormSite</p>
+        <h1 style="margin:8px 0 0;color:#ffffff;font-size:22px;font-weight:700;">New Contact Submission</h1>
+        <p style="margin:4px 0 0;color:rgba(255,255,255,0.5);font-size:13px;">Reference #{{ submission.pk }} · {{ submission.submitted_at|date:"N j, Y" }} at {{ submission.submitted_at|time:"g:i A" }} UTC</p>
+      </td></tr>
+
+      <!-- Sender info -->
+      <tr><td style="padding:28px 36px 0;">
+        <p style="margin:0 0 16px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7a7570;">Sender</p>
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="padding:8px 12px;background:#f5f2ec;border-radius:8px 8px 0 0;border-bottom:1px solid #ddd8cf;">
+              <span style="font-size:12px;color:#7a7570;display:block;">Name</span>
+              <strong style="font-size:15px;">{{ submission.name }}</strong>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;background:#f5f2ec;border-radius:0 0 8px 8px;">
+              <span style="font-size:12px;color:#7a7570;display:block;">Email</span>
+              <a href="mailto:{{ submission.email }}" style="font-size:15px;color:#c84b2f;font-weight:600;text-decoration:none;">{{ submission.email }}</a>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+
+      <!-- Message -->
+      <tr><td style="padding:24px 36px 0;">
+        <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7a7570;">Message</p>
+        <p style="margin:0 0 6px;font-size:15px;font-weight:600;">{{ submission.subject }}</p>
+        <div style="background:#f5f2ec;border-radius:8px;padding:16px;font-size:14px;line-height:1.7;color:#333;white-space:pre-wrap;">{{ submission.message }}</div>
+      </td></tr>
+
+      <!-- Metadata -->
+      <tr><td style="padding:24px 36px 0;">
+        <p style="margin:0 0 12px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7a7570;">Metadata</p>
+        <table width="100%" cellpadding="6" cellspacing="0" style="font-size:13px;border-collapse:collapse;">
+          <tr style="border-bottom:1px solid #f0ece4;">
+            <td style="color:#7a7570;padding:6px 0;width:120px;">⏱ Timestamp</td>
+            <td>{{ submission.submitted_at|date:"N j, Y" }} at {{ submission.submitted_at|time:"g:i A T" }}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f0ece4;">
+            <td style="color:#7a7570;padding:6px 0;">🌐 IP Address</td>
+            <td>{{ submission.ip_address|default:"Unknown" }}</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f0ece4;">
+            <td style="color:#7a7570;padding:6px 0;">📱 Device</td>
+            <td>{{ submission.device_type|capfirst|default:"Unknown" }}</td>
+          </tr>
+          {% if submission.city or submission.country %}
+          <tr style="border-bottom:1px solid #f0ece4;">
+            <td style="color:#7a7570;padding:6px 0;">📍 Location</td>
+            <td>{{ submission.city }}{% if submission.city and submission.country %}, {% endif %}{{ submission.country }}{% if submission.latitude %} <span style="color:#7a7570;">({{ submission.latitude }}, {{ submission.longitude }})</span>{% endif %}</td>
+          </tr>
+          {% endif %}
+        </table>
+      </td></tr>
+
+      <!-- Reply CTA -->
+      <tr><td style="padding:28px 36px 36px;">
+        <a href="mailto:{{ submission.email }}?subject=Re: {{ submission.subject }}" style="display:inline-block;background:#0d0d0d;color:#ffffff;padding:12px 24px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Reply to {{ submission.name }} →</a>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>

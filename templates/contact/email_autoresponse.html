@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>We got your message</title></head>
+<body style="margin:0;padding:0;background:#f5f2ec;font-family:'DM Sans',Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 20px;">
+  <tr><td align="center">
+    <table width="100%" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #ddd8cf;">
+
+      <!-- Header with check mark -->
+      <tr><td style="background:#0d0d0d;padding:36px;text-align:center;">
+        <div style="width:64px;height:64px;background:rgba(42,122,75,0.2);border:2px solid rgba(42,122,75,0.4);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px;">✓</div>
+        <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:700;">We got your message!</h1>
+        <p style="margin:8px 0 0;color:rgba(255,255,255,0.55);font-size:14px;">Hi {{ submission.name }}, thanks for reaching out.</p>
+      </td></tr>
+
+      <!-- Body -->
+      <tr><td style="padding:32px 36px;">
+        <p style="margin:0 0 20px;font-size:15px;line-height:1.7;color:#333;">
+          We've received your message and our team will review it shortly. You can typically expect a response <strong>within 1–2 business days</strong>.
+        </p>
+
+        <!-- Message copy -->
+        <p style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7a7570;">Your message</p>
+        <div style="background:#f5f2ec;border-left:3px solid #c84b2f;border-radius:0 8px 8px 0;padding:16px;margin-bottom:24px;">
+          <p style="margin:0 0 6px;font-size:14px;font-weight:600;color:#0d0d0d;">{{ submission.subject }}</p>
+          <p style="margin:0;font-size:13px;color:#555;line-height:1.6;white-space:pre-wrap;">{{ submission.message }}</p>
+        </div>
+
+        <!-- Meta row -->
+        <table width="100%" cellpadding="0" cellspacing="0" style="font-size:12px;color:#7a7570;border-top:1px solid #f0ece4;padding-top:16px;">
+          <tr>
+            <td>⏱ Received {{ submission.submitted_at|date:"N j, Y" }} at {{ submission.submitted_at|time:"g:i A" }} UTC</td>
+            {% if submission.device_type %}<td align="right">📱 Sent from {{ submission.device_type }}</td>{% endif %}
+          </tr>
+        </table>
+      </td></tr>
+
+      <!-- Footer -->
+      <tr><td style="background:#f5f2ec;padding:20px 36px;text-align:center;border-top:1px solid #ddd8cf;">
+        <p style="margin:0;font-size:12px;color:#7a7570;">This is an automated confirmation. Please do not reply to this email.</p>
+        <p style="margin:4px 0 0;font-size:12px;color:#7a7570;">© FormSite · <a href="#" style="color:#c84b2f;text-decoration:none;">Unsubscribe</a></p>
+      </td></tr>
+
+    </table>
+  </td></tr>
+</table>
+</body>
+</html>

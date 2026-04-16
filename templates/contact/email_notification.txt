@@ -1,0 +1,24 @@
+New Contact Form Submission
+══════════════════════════════════════════════════════════════
+
+Submitted: {{ submission.submitted_at|date:"N j, Y" }} at {{ submission.submitted_at|time:"g:i A" }} UTC
+Reference: #{{ submission.pk }}
+
+── SENDER ──────────────────────────────────────────────────────
+Name:     {{ submission.name }}
+Email:    {{ submission.email }}
+
+── MESSAGE ─────────────────────────────────────────────────────
+Subject:  {{ submission.subject }}
+
+{{ submission.message }}
+
+── METADATA ────────────────────────────────────────────────────
+IP Address:   {{ submission.ip_address|default:"Unknown" }}
+Device:       {{ submission.device_type|capfirst|default:"Unknown" }}
+{% if submission.city or submission.country %}Location:     {{ submission.city }}{% if submission.city and submission.country %}, {% endif %}{{ submission.country }}{% endif %}
+{% if submission.latitude %}Coordinates:  {{ submission.latitude }}, {{ submission.longitude }}{% endif %}
+User Agent:   {{ submission.user_agent }}
+
+══════════════════════════════════════════════════════════════
+Reply directly to this email to respond to {{ submission.name }}.

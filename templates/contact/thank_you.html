@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Message Sent — Thank You{% endblock %}
+
+{% block extra_head %}
+<style>
+  .ty-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .ty-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3.5rem;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.07);
+    animation: slideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .check-circle {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: rgba(42,122,75,0.1);
+    border: 2px solid rgba(42,122,75,0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.75rem;
+    font-size: 2rem;
+    animation: pop 0.4s 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes pop {
+    from { transform: scale(0); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .ty-card h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2.2rem;
+    margin-bottom: 0.6rem;
+  }
+  .ty-card .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+  }
+
+  /* Submission summary */
+  .summary {
+    background: var(--paper);
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: left;
+    margin-bottom: 2rem;
+  }
+  .summary h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .summary-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.9rem;
+    align-items: baseline;
+  }
+  .summary-row .key {
+    font-weight: 500;
+    min-width: 80px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .summary-row .val { color: var(--ink); word-break: break-word; }
+
+  /* Delivery badges */
+  .delivery-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+  }
+  .badge.sent { background: rgba(42,122,75,0.1); color: var(--success); border: 1px solid rgba(42,122,75,0.2); }
+  .badge.pending { background: rgba(122,117,112,0.1); color: var(--muted); border: 1px solid var(--border); }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.75rem 1.75rem;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+  }
+  .back-link:hover { background: var(--accent); text-decoration: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ty-page">
+  <div class="ty-card">
+
+    <div class="check-circle">✓</div>
+
+    <h1>Message sent!</h1>
+    <p class="subtitle">
+      We've received your message and will get back to you shortly.<br>
+      Check your inbox — we've sent you a confirmation.
+    </p>
+
+    {% if submission %}
+    <!-- Submission summary -->
+    <div class="summary">
+      <h3>Your submission</h3>
+      <div class="summary-row">
+        <span class="key">Name</span>
+        <span class="val">{{ submission.name }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Email</span>
+        <span class="val">{{ submission.email }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Subject</span>
+        <span class="val">{{ submission.subject }}</span>
+      </div>
+      <div class="summary-row">
+        <span class="key">Sent at</span>
+        <span class="val">{{ submission.submitted_at|date:"N j, Y" }} at {{ submission.submitted_at|time:"g:i A" }} UTC</span>
+      </div>
+      {% if submission.city or submission.country %}
+      <div class="summary-row">
+        <span class="key">Location</span>
+        <span class="val">{{ submission.city }}{% if submission.city and submission.country %}, {% endif %}{{ submission.country }}</span>
+      </div>
+      {% endif %}
+      {% if submission.device_type %}
+      <div class="summary-row">
+        <span class="key">Device</span>
+        <span class="val">{{ submission.device_type|capfirst }}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Delivery status badges -->
+    <div class="delivery-badges">
+      <span class="badge {% if submission.email_sent %}sent{% else %}pending{% endif %}">
+        {% if submission.email_sent %}✓{% else %}⏳{% endif %} Notification email
+      </span>
+      <span class="badge {% if submission.autoresponse_sent %}sent{% else %}pending{% endif %}">
+        {% if submission.autoresponse_sent %}✓{% else %}⏳{% endif %} Auto-response
+      </span>
+      <span class="badge {% if submission.webhook_sent %}sent{% else %}pending{% endif %}">
+        {% if submission.webhook_sent %}✓{% else %}⏳{% endif %} Webhook
+      </span>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'contact:contact' %}" class="back-link">
+      ← Send another message
+    </a>
+
+  </div>
+</div>
+{% endblock %}

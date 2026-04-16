@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── Layout ───────────────────────────────── */
+  .page-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+  }
+
+  /* ── Form card ────────────────────────────── */
+  .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3rem 3.5rem;
+    width: 100%;
+    max-width: 620px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.07);
+  }
+
+  .form-header { margin-bottom: 2rem; }
+  .form-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 2rem;
+  }
+  .form-header p { color: var(--muted); margin-top: 0.4rem; font-size: 0.95rem; }
+
+  /* Fields */
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .field { margin-bottom: 1.2rem; }
+  .field label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 0.45rem;
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    background: var(--paper);
+    color: var(--ink);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200,75,47,0.1);
+  }
+  .field textarea { resize: vertical; min-height: 140px; }
+  .field .errorlist {
+    list-style: none;
+    color: var(--accent);
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+  }
+
+  /* Honeypot — visually hidden */
+  .honeypot-wrap {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  /* Submit button */
+  .submit-btn {
+    margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 8px;
+    padding: 0.85rem 2rem;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .submit-btn:hover { background: var(--accent); transform: translateY(-1px); }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn .arrow { transition: transform 0.2s; }
+  .submit-btn:hover .arrow { transform: translateX(4px); }
+
+  /* Location badge */
+  #location-badge {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--success);
+    background: rgba(42,122,75,0.08);
+    border: 1px solid rgba(42,122,75,0.2);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 1.2rem;
+    width: fit-content;
+  }
+  #location-badge.visible { display: flex; }
+
+  /* Non-field errors */
+  .form-errors {
+    background: rgba(200,75,47,0.08);
+    border: 1px solid rgba(200,75,47,0.25);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .form-card { padding: 2rem 1.5rem; }
+    .field-row { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+
+  <!-- ── Centered Form Card ─────────────────────── -->
+  <div class="form-card">
+    <div class="form-header">
+      <h2>Send us a message</h2>
+      <p>Fill out the form — we'll get back to you shortly.</p>
+    </div>
+
+    <!-- Location badge (shown after JS gets coords) -->
+    <div id="location-badge">
+      <span>📍</span>
+      <span id="location-text">Location detected</span>
+    </div>
+
+    {% if form.non_field_errors %}
+    <div class="form-errors">
+      {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" id="contact-form" novalidate>
+      {% csrf_token %}
+
+      <!-- Hidden metadata fields -->
+      {{ form.latitude }}
+      {{ form.longitude }}
+      {{ form.city }}
+      {{ form.country }}
+      {{ form.device_type }}
+
+      <!-- Honeypot — hidden from humans, visible to bots -->
+      <div class="honeypot-wrap" aria-hidden="true">
+        {{ form.website }}
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="{{ form.name.id_for_label }}">Full Name *</label>
+          {{ form.name }}
+          {% if form.name.errors %}<ul class="errorlist">{% for e in form.name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="field">
+          <label for="{{ form.email.id_for_label }}">Email Address *</label>
+          {{ form.email }}
+          {% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="{{ form.subject.id_for_label }}">Subject *</label>
+        {{ form.subject }}
+        {% if form.subject.errors %}<ul class="errorlist">{% for e in form.subject.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.message.id_for_label }}">Message *</label>
+        {{ form.message }}
+        {% if form.message.errors %}<ul class="errorlist">{% for e in form.message.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit-btn">
+        <span id="btn-text">Send Message</span>
+        <span class="arrow">→</span>
+      </button>
+    </form>
+  </div><!-- /.form-card -->
+</div><!-- /.page-wrap -->
+
+<script>
+// ── Device type detection ──────────────────────────────────────────────────
+(function() {
+  const ua = navigator.userAgent.toLowerCase();
+  let device = 'desktop';
+  if (/iphone|android.*mobile/.test(ua)) device = 'mobile';
+  else if (/ipad|tablet/.test(ua)) device = 'tablet';
+  document.querySelector('[name="device_type"]').value = device;
+})();
+
+// ── Geolocation + reverse geocoding ───────────────────────────────────────
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const lat = pos.coords.latitude.toFixed(6);
+      const lng = pos.coords.longitude.toFixed(6);
+
+      document.querySelector('[name="latitude"]').value = lat;
+      document.querySelector('[name="longitude"]').value = lng;
+
+      // Reverse geocode via free Nominatim API
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+          { headers: { 'Accept-Language': 'en' } }
+        );
+        const data = await res.json();
+        const city = data.address?.city || data.address?.town || data.address?.village || '';
+        const country = data.address?.country || '';
+
+        document.querySelector('[name="city"]').value = city;
+        document.querySelector('[name="country"]').value = country;
+
+        const badge = document.getElementById('location-badge');
+        const text = document.getElementById('location-text');
+        text.textContent = [city, country].filter(Boolean).join(', ') || `${lat}, ${lng}`;
+        badge.classList.add('visible');
+      } catch (_) {
+        // Geocoding failed — coords still captured
+        document.getElementById('location-badge').classList.add('visible');
+        document.getElementById('location-text').textContent = `${lat}, ${lng}`;
+      }
+    },
+    () => {} // User denied or error — silent fail
+  );
+}
+
+// ── Submit UX ──────────────────────────────────────────────────────────────
+document.getElementById('contact-form').addEventListener('submit', function() {
+  const btn = document.getElementById('submit-btn');
+  const txt = document.getElementById('btn-text');
+  btn.disabled = true;
+  txt.textContent = 'Sending…';
+});
+</script>
+{% endblock %}

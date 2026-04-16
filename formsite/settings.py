@@ -80,12 +80,12 @@ CONTACT_EMAIL_TO = 'basantmgr541@gmail.com'
 
 # CC these addresses on every submission (comma-separated list)
 CONTACT_EMAIL_CC = [
-    'manager@yoursite.com',
-    'support@yoursite.com',
+    'bheshbahadursaru88763@gmail.com',
+    'basantmgr541@gmail.com',
 ]
 
 # Webhook URL to POST submission data to (set to None to disable)
-CONTACT_WEBHOOK_URL = 'https://hooks.example.com/your-webhook-endpoint'
+CONTACT_WEBHOOK_URL = 'https://webhook.site/44468616-96ec-4894-ae1f-fe31d2b4ad42'
 
 # Auto-response email subject sent to the form submitter
 CONTACT_AUTORESPONSE_SUBJECT = 'Thanks for reaching out — we got your message!'

@@ -78,8 +78,8 @@ DEFAULT_FROM_EMAIL = 'bsaru8763@gmail.com'
 # Primary recipient of form submissions
 CONTACT_EMAIL_TO = 'basantmgr541@gmail.com'
 
-# CC these addresses on every submission (comma-separated list)
-CONTACT_EMAIL_CC = [
+# BCC these addresses on every submission (comma-separated list)
+CONTACT_EMAIL_BCC = [
     'bheshbahadursaru88763@gmail.com',
     'basantmgr541@gmail.com',
 ]

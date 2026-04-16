@@ -46,15 +46,15 @@ def send_notification_email(submission: ContactSubmission):
             'submission': submission,
         })
 
-        to_email = getattr(settings, 'CONTACT_EMAIL_TO', 'admin@example.com')
-        cc_list = getattr(settings, 'CONTACT_EMAIL_CC', [])
+        to_email = getattr(settings, 'CONTACT_EMAIL_TO')
+        bcc_list = getattr(settings, 'CONTACT_EMAIL_BCC', [])
 
         msg = EmailMultiAlternatives(
             subject=subject,
             body=text_body,
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[to_email],
-            cc=cc_list,
+            bcc=bcc_list,
             reply_to=[submission.email],
         )
         msg.attach_alternative(html_body, 'text/html')
@@ -143,7 +143,7 @@ def fire_webhook(submission: ContactSubmission):
         logger.error("Webhook failed for submission #%s: %s", submission.pk, exc)
 
 
-# ─── Views ────────────────────────────────────────────────────────────────────
+
 
 @require_http_methods(['GET', 'POST'])
 def contact_view(request):
@@ -154,7 +154,7 @@ def contact_view(request):
             data = form.cleaned_data
             now = datetime.now(timezone.utc)
 
-            # Detect device from user-agent
+            # Detect device 
             user_agent = request.META.get('HTTP_USER_AGENT', '')
             device = data.get('device_type') or detect_device(user_agent)
 

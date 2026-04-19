@@ -1,0 +1,69 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Form Settings{% endblock %}
+{% block page_title %}Form Settings{% endblock %}
+{% block nav_config %}active{% endblock %}
+
+{% block content %}
+<div style="max-width:680px">
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header"><h2>📬 Email delivery</h2></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Delivery email</label>
+          <input type="email" name="email_to" value="{{ form.email_to.value }}" class="form-control" required>
+          <div class="form-hint">All submissions are delivered to this address.</div>
+          {% if form.email_to.errors %}<div class="form-error">{{ form.email_to.errors|join:", " }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">BCC addresses <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:0.75rem">(optional)</span></label>
+          <input type="text" name="email_bcc" value="{{ form.email_bcc.value|default:'' }}" class="form-control" placeholder="colleague@example.com, manager@example.com">
+          <div class="form-hint">Comma-separated. Hidden from the primary recipient.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header"><h2>↩️ Auto-response</h2></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <input type="text" name="autoresponse_subject" value="{{ form.autoresponse_subject.value }}" class="form-control">
+          {% if form.autoresponse_subject.errors %}<div class="form-error">{{ form.autoresponse_subject.errors|join:", " }}</div>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message body</label>
+          <textarea name="autoresponse_body" class="form-control" rows="7">{{ form.autoresponse_body.value }}</textarea>
+          <div class="form-hint">Placeholders: <code>{name}</code> <code>{subject}</code> <code>{message}</code></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-header"><h2>🎉 Thank-you page</h2></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Custom redirect URL <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:0.75rem">(optional)</span></label>
+          <input type="url" name="redirect_url" value="{{ form.redirect_url.value|default:'' }}" class="form-control" placeholder="https://yoursite.com/thank-you">
+          <div class="form-hint">Leave blank to use the built-in thank-you page.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:28px">
+      <div class="card-header"><h2>🔗 Webhook</h2></div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Webhook URL <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--muted);font-size:0.75rem">(optional)</span></label>
+          <input type="url" name="webhook_url" value="{{ form.webhook_url.value|default:'' }}" class="form-control" placeholder="https://hooks.zapier.com/...">
+          <div class="form-hint">Full submission POSTed as JSON. Leave blank to disable.</div>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="padding:13px 32px;font-size:0.95rem">Save settings →</button>
+  </form>
+</div>
+{% endblock %}

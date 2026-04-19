@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'contact',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -85,7 +86,7 @@ CONTACT_EMAIL_BCC = [
 ]
 
 # Webhook URL to POST submission data to (set to None to disable)
-CONTACT_WEBHOOK_URL = 'https://webhook.site/44468616-96ec-4894-ae1f-fe31d2b4ad42'
+CONTACT_WEBHOOK_URL = None
 
 # Auto-response email subject sent to the form submitter
 CONTACT_AUTORESPONSE_SUBJECT = 'Thanks for reaching out — we got your message!'
@@ -105,3 +106,8 @@ Message:
 Best regards,
 The Team
 """
+
+
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/accounts/dashboard/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'

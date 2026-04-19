@@ -1,0 +1,53 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Submission #{{ submission.pk }}{% endblock %}
+{% block page_title %}Submission #{{ submission.pk }}{% endblock %}
+{% block nav_submissions %}active{% endblock %}
+{% block topbar_actions %}
+  <a href="{% url 'accounts:submissions' %}" class="btn btn-outline btn-sm">← Back</a>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+@media(max-width:700px){.detail-grid{grid-template-columns:1fr;}}
+.kv{padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;}
+.kv:last-child{border-bottom:none;}
+.kv-key{font-size:0.8rem;font-weight:600;color:var(--muted);min-width:110px;text-transform:uppercase;letter-spacing:0.04em;}
+.kv-val{font-size:0.9rem;word-break:break-all;}
+pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;font-size:0.8rem;line-height:1.8;color:var(--muted);max-height:320px;}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="detail-grid">
+  <div class="card">
+    <div class="card-header"><h2>📋 Form data</h2></div>
+    <div class="card-body">
+      <div class="kv"><span class="kv-key">Name</span><span class="kv-val">{{ submission.name|default:"—" }}</span></div>
+      <div class="kv"><span class="kv-key">Email</span><span class="kv-val">{{ submission.email|default:"—" }}</span></div>
+      <div class="kv"><span class="kv-key">Subject</span><span class="kv-val">{{ submission.subject|default:"—" }}</span></div>
+      <div class="kv"><span class="kv-key">Message</span><span class="kv-val">{{ submission.message|default:"—"|linebreaksbr }}</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><h2>📍 Metadata</h2></div>
+    <div class="card-body">
+      <div class="kv"><span class="kv-key">Timestamp</span><span class="kv-val">{{ submission.submitted_at|date:"Y-m-d H:i:s" }} UTC</span></div>
+      <div class="kv"><span class="kv-key">IP address</span><span class="kv-val">{{ submission.ip_address|default:"—" }}</span></div>
+      <div class="kv"><span class="kv-key">Location</span><span class="kv-val">{{ submission.city }}{% if submission.city and submission.country %}, {% endif %}{{ submission.country|default:"—" }}</span></div>
+      <div class="kv"><span class="kv-key">Device</span><span class="kv-val">{{ submission.device_type|title|default:"—" }}</span></div>
+      <div class="kv"><span class="kv-key">Spam</span><span class="kv-val">{% if submission.is_spam %}<span class="badge badge-spam">Yes</span>{% else %}<span class="badge badge-ok">No</span>{% endif %}</span></div>
+      <div class="kv"><span class="kv-key">Auto-response</span><span class="kv-val">{% if submission.autoresponse_sent %}<span class="badge badge-ok">Sent</span>{% else %}<span class="badge badge-pending">Not sent</span>{% endif %}</span></div>
+      <div class="kv"><span class="kv-key">Webhook</span><span class="kv-val">{% if submission.webhook_sent %}<span class="badge badge-ok">Sent</span>{% else %}<span class="badge badge-pending">Not sent</span>{% endif %}</span></div>
+    </div>
+  </div>
+</div>
+
+{% if submission.user_agent %}
+<div class="card">
+  <div class="card-header"><h2>🌐 User agent</h2></div>
+  <div class="card-body"><pre>{{ submission.user_agent }}</pre></div>
+</div>
+{% endif %}
+{% endblock %}

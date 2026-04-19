@@ -1,0 +1,43 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Submissions{% endblock %}
+{% block page_title %}Submissions{% endblock %}
+{% block nav_submissions %}active{% endblock %}
+
+{% block content %}
+<div style="display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap">
+  <a href="{% url 'accounts:submissions' %}" class="btn {% if not spam_filter %}btn-primary{% else %}btn-outline{% endif %} btn-sm">All</a>
+  <a href="?spam=0" class="btn {% if spam_filter == '0' %}btn-primary{% else %}btn-outline{% endif %} btn-sm">✅ Legitimate</a>
+  <a href="?spam=1" class="btn {% if spam_filter == '1' %}btn-primary{% else %}btn-outline{% endif %} btn-sm">🚫 Spam</a>
+</div>
+
+<div class="card">
+  {% if submissions %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Email</th><th>Subject</th><th>Device</th><th>Location</th><th>Date</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for s in submissions %}
+        <tr>
+          <td style="font-weight:500">{{ s.name|default:"—" }}</td>
+          <td style="color:var(--muted)">{{ s.email|default:"—" }}</td>
+          <td>{{ s.subject|default:"—"|truncatechars:36 }}</td>
+          <td style="color:var(--muted);font-size:0.8rem">{{ s.device_type|title }}</td>
+          <td style="color:var(--muted);font-size:0.8rem">{{ s.city }}{% if s.city and s.country %}, {% endif %}{{ s.country }}</td>
+          <td style="color:var(--muted);font-size:0.8rem;white-space:nowrap">{{ s.submitted_at|date:"M d Y, H:i" }}</td>
+          <td>{% if s.is_spam %}<span class="badge badge-spam">Spam</span>{% else %}<span class="badge badge-ok">OK</span>{% endif %}</td>
+          <td><a href="{% url 'accounts:submission_detail' s.pk %}" class="btn btn-outline btn-sm">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <p>No submissions found{% if spam_filter %} for this filter{% endif %}.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -14,6 +14,9 @@ class ContactSubmission(models.Model):
     ip_address = models.GenericIPAddressField(null=True, blank=True)
     user_agent = models.TextField(blank=True)
 
+    headers = models.TextField(blank=True, default='')
+    raw_headers = models.TextField(blank=True, default='')
+
     # Device / location (populated from JS geolocation + user-agent hints)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)

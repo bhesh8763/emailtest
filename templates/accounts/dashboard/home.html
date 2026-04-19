@@ -1,0 +1,76 @@
+{% extends "accounts/dashboard_base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block nav_home %}active{% endblock %}
+{% block topbar_actions %}
+  <a href="{% url 'accounts:config' %}" class="btn btn-primary btn-sm">⚙️ Form Settings</a>
+{% endblock %}
+
+{% block content %}
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--accent)">{{ total }}</div>
+    <div class="stat-label">Total submissions</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:#43e97b">{{ legit_count }}</div>
+    <div class="stat-label">Legitimate</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:#ff6584">{{ spam_count }}</div>
+    <div class="stat-label">Spam caught</div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+  <div class="card-header"><h2>Your form endpoint</h2></div>
+  <div class="card-body">
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:12px">Point any HTML form at this URL:</p>
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:monospace;font-size:0.9rem;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:12px;">
+      <span id="epUrl">{{ request.scheme }}://{{ request.get_host }}/contact/</span>
+      <button onclick="copyEp()" style="background:rgba(108,99,255,0.15);border:none;color:var(--accent);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:600;" id="copyBtn">Copy</button>
+    </div>
+    <p style="color:var(--muted);font-size:0.8rem;margin-top:10px">Add a hidden <code>_honey</code> field for spam protection.</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2>Recent submissions</h2>
+    <a href="{% url 'accounts:submissions' %}" class="btn btn-outline btn-sm">View all</a>
+  </div>
+  {% if recent %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Email</th><th>Subject</th><th>When</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for s in recent %}
+        <tr>
+          <td>{{ s.name|default:"—" }}</td>
+          <td style="color:var(--muted)">{{ s.email|default:"—" }}</td>
+          <td>{{ s.subject|default:"—"|truncatechars:40 }}</td>
+          <td style="color:var(--muted);font-size:0.8rem">{{ s.submitted_at|date:"M d, H:i" }}</td>
+          <td>{% if s.is_spam %}<span class="badge badge-spam">Spam</span>{% else %}<span class="badge badge-ok">OK</span>{% endif %}</td>
+          <td><a href="{% url 'accounts:submission_detail' s.pk %}" class="btn btn-outline btn-sm">View</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <p>No submissions yet.</p>
+  </div>
+  {% endif %}
+</div>
+<script>
+function copyEp(){
+  navigator.clipboard.writeText(document.getElementById('epUrl').textContent);
+  const btn=document.getElementById('copyBtn');
+  btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',2000);
+}
+</script>
+{% endblock %}

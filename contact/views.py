@@ -6,9 +6,10 @@ from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
-
+from django.contrib.auth.decorators import login_required
 from .forms import ContactForm
 from .models import ContactSubmission
+
 
 logger = logging.getLogger(__name__)
 
@@ -144,7 +145,7 @@ def fire_webhook(submission: ContactSubmission):
 
 
 
-
+@login_required
 @require_http_methods(['GET', 'POST'])
 def contact_view(request):
     if request.method == 'POST':
@@ -206,3 +207,31 @@ def thank_you_view(request):
             pass
 
     return render(request, 'contact/thank_you.html', {'submission': submission})
+
+
+import json
+
+def get_request_headers(request):
+    formatted = {}
+    raw = {}
+
+    direct_keys = (
+        'CONTENT_TYPE', 'CONTENT_LENGTH', 'SERVER_NAME',
+        'SERVER_PORT', 'SERVER_PROTOCOL', 'REQUEST_METHOD',
+        'QUERY_STRING', 'PATH_INFO', 'REMOTE_ADDR',
+    )
+
+    for key, value in request.META.items():
+        if key.startswith('HTTP_'):
+            header_name = key[5:].replace('_', '-').title()
+            formatted[header_name] = value
+            raw[key] = value
+        elif key in direct_keys:
+            formatted[key.replace('_', '-').title()] = value
+            raw[key] = value
+
+    # dump to plain text string
+    return (
+        json.dumps(formatted, indent=2),
+        json.dumps(raw, indent=2),
+    )

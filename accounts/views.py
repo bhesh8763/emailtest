@@ -36,6 +36,7 @@ def login_view(request):
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
             login(request, form.get_user())
+            messages.success(request, f"Welcome back, {form.get_user().username}!")
             return redirect(request.GET.get('next', 'accounts:dashboard'))
     else:
         form = LoginForm()
@@ -45,7 +46,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, "You have been logged out.")
-    return redirect('accounts:login')
+    return redirect('landing')
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -63,7 +64,7 @@ def _get_or_create_config(user):
 @login_required
 def dashboard_view(request):
     config = _get_or_create_config(request.user)
-    qs = ContactSubmission.objects.filter(email=request.user.email)
+    qs = ContactSubmission.objects.filter(owner=request.user)
     recent = qs.order_by('-submitted_at')[:5]
     total = qs.count()
     spam_count = qs.filter(is_spam=True).count()
@@ -100,7 +101,7 @@ def submissions_view(request):
     spam_filter = request.GET.get('spam', '')
 
     qs = ContactSubmission.objects.filter(
-        email=request.user.email
+        owner=request.user
     ).order_by('-submitted_at')
 
     if spam_filter == '1':
@@ -121,7 +122,7 @@ def submission_detail_view(request, pk):
     submission = get_object_or_404(
         ContactSubmission,
         pk=pk,
-        email=request.user.email
+        owner=request.user
     )
     return render(request, 'accounts/dashboard/submission_detail.html', {
         'submission': submission,

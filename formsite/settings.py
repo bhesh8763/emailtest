@@ -74,7 +74,6 @@ DEFAULT_FROM_EMAIL = 'bsaru8763@gmail.com'
 # ─── FORM SETTINGS ───────────────────────────────────────────────────────────
 CONTACT_EMAIL_TO = []
 CONTACT_EMAIL_BCC = []
-CONTACT_WEBHOOK_URL = None
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/accounts/dashboard/'

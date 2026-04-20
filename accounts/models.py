@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -9,6 +10,13 @@ class UserFormConfig(models.Model):
     """
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='form_config'
+    )
+
+    unique_identifier = models.CharField(
+        max_length=8,
+        unique=True,
+        blank=True,
+        help_text="Share this code to receive form submissions"
     )
 
     # Primary recipient
@@ -33,17 +41,13 @@ class UserFormConfig(models.Model):
         )
     )
 
-    # Optional redirect after submission
-    redirect_url = models.URLField(
-        blank=True,
-        help_text="Custom thank-you page URL. Leave blank for built-in page."
-    )
-
-    # Webhook
-    webhook_url = models.URLField(blank=True, help_text="POST JSON here on every submission")
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.unique_identifier:
+            self.unique_identifier = uuid.uuid4().hex[:8].upper()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.user.username} — {self.email_to}"
@@ -55,4 +59,4 @@ class UserFormConfig(models.Model):
 
     @property
     def form_url_path(self):
-        return f"/f/{self.email_to}/"
+        return f"/f/{self.unique_identifier}/"

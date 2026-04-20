@@ -25,12 +25,12 @@
 <div class="card" style="margin-bottom:24px">
   <div class="card-header"><h2>Your form endpoint</h2></div>
   <div class="card-body">
-    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:12px">Point any HTML form at this URL:</p>
+    <p style="color:var(--muted);font-size:0.88rem;margin-bottom:12px">Share this link to receive form submissions:</p>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:monospace;font-size:0.9rem;color:var(--accent);display:flex;align-items:center;justify-content:space-between;gap:12px;">
-      <span id="epUrl">{{ request.scheme }}://{{ request.get_host }}/contact/</span>
+      <span id="epUrl">{{ request.scheme }}://{{ request.get_host }}{{ config.form_url_path }}</span>
       <button onclick="copyEp()" style="background:rgba(108,99,255,0.15);border:none;color:var(--accent);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:600;" id="copyBtn">Copy</button>
     </div>
-    <p style="color:var(--muted);font-size:0.8rem;margin-top:10px">Add a hidden <code>_honey</code> field for spam protection.</p>
+    <p style="color:var(--muted);font-size:0.8rem;margin-top:10px">Your unique code: <strong>{{ config.unique_identifier }}</strong></p>
   </div>
 </div>
 

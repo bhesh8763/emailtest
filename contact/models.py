@@ -39,7 +39,6 @@ class ContactSubmission(models.Model):
 
     # Delivery tracking
     email_sent = models.BooleanField(default=False)
-    webhook_sent = models.BooleanField(default=False)
     autoresponse_sent = models.BooleanField(default=False)
 
     class Meta:

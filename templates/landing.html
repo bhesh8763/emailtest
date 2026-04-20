@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FormSite - Simple Form Backend for Everyone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f2ec;
+    --accent: #c84b2f;
+    --accent2: #2f6bc8;
+    --muted: #7a7570;
+    --border: #ddd8cf;
+    --card: #ffffff;
+    --success: #2a7a4b;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(200,75,47,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 85% 80%, rgba(47,107,200,0.05) 0%, transparent 50%);
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: none; }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    z-index: 9999;
+  }
+
+  /* Navigation */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--ink);
+  }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 24px; align-items: center; }
+  .nav-links a {
+    color: var(--ink);
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover { background: rgba(200,75,47,0.1); }
+  .btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--ink);
+    color: var(--ink);
+  }
+  .btn-outline:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover {
+    background: #a83b1f;
+    transform: translateY(-2px);
+  }
+
+  /* Hero Section */
+  .hero {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 40px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    color: var(--ink);
+  }
+  .hero h1 .highlight {
+    color: var(--accent);
+    position: relative;
+  }
+  .hero p {
+    font-size: 1.2rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 0 auto 40px;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .hero-cta .btn {
+    padding: 16px 32px;
+    font-size: 1rem;
+  }
+
+  /* Features */
+  .features {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .features h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 32px;
+  }
+  .feature-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+  .feature-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+  }
+  .feature-card p {
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* How it works */
+  .how-it-works {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .how-it-works h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .step {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  .step-number {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--accent);
+    min-width: 50px;
+  }
+  .step-content h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+  .step-content p {
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 80px 40px;
+    text-align: center;
+  }
+  .cta-section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+  .cta-section p {
+    color: var(--muted);
+    font-size: 1.1rem;
+    margin-bottom: 32px;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border);
+    margin-top: 60px;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .navbar { padding: 16px 20px; flex-direction: column; gap: 16px; }
+    .hero { padding: 40px 20px; }
+    .hero h1 { font-size: 2.2rem; }
+    .hero-cta { flex-direction: column; }
+    .hero-cta .btn { width: 100%; text-align: center; }
+    .features, .how-it-works, .cta-section { padding: 40px 20px; }
+    .step { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+  {% if messages %}
+    <div style="max-width: 900px; margin: 20px auto 0; padding: 0 40px;">
+      {% for msg in messages %}
+        <div style="padding: 12px 20px; border-radius: 8px; margin-bottom: 12px; font-size: 0.9rem; {% if msg.tags == 'success' %}background: rgba(42,122,75,0.1); border: 1px solid rgba(42,122,75,0.3); color: #2a7a4b;{% else %}background: rgba(47,107,200,0.1); border: 1px solid rgba(47,107,200,0.3); color: #2f6bc8;{% endif %}">
+          {{ msg }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="/" class="logo">Form<span>Site</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How it works</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline">Dashboard</a>
+        <a href="{% url 'accounts:logout' %}" class="btn btn-primary">Logout</a>
+      {% else %}
+        <a href="{% url 'accounts:login' %}" class="btn btn-outline">Sign In</a>
+        <a href="{% url 'accounts:register' %}" class="btn btn-primary">Get Started</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Form Backend Made <span class="highlight">Simple</span></h1>
+    <p>
+      Create custom forms in seconds. Get instant email notifications when someone submits.
+      No backend code required — just share your unique form URL and start collecting submissions.
+    </p>
+    <div class="hero-cta">
+      {% if user.is_authenticated %}
+        <a href="{% url 'accounts:dashboard' %}" class="btn btn-primary">Go to Dashboard →</a>
+      {% else %}
+        <a href="{% url 'accounts:register' %}" class="btn btn-primary">Create Your Form →</a>
+        <a href="{% url 'accounts:login' %}" class="btn btn-outline">Sign In</a>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <h2>Everything You Need</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Setup</h3>
+        <p>Register and get your unique form URL in seconds. No coding or configuration needed.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📧</div>
+        <h3>Email Notifications</h3>
+        <p>Get notified instantly when someone submits your form. Customize auto-responses too.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Spam Protection</h3>
+        <p>Built-in honeypot and spam detection keep your submissions clean and relevant.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Submission Dashboard</h3>
+        <p>View, filter, and manage all your form submissions in one organized dashboard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h3>Custom Branding</h3>
+        <p>Personalize your form with custom messages and auto-response emails.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📍</div>
+        <h3>Location Tracking</h3>
+        <p>See where submissions come from with device and location metadata.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works" id="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">01</div>
+        <div class="step-content">
+          <h3>Create Your Account</h3>
+          <p>Sign up in seconds. We'll automatically generate your unique form identifier.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">02</div>
+        <div class="step-content">
+          <h3>Customize Your Form Settings</h3>
+          <p>Set your delivery email, BCC recipients, and customize your auto-response message.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">03</div>
+        <div class="step-content">
+          <h3>Share Your Form URL</h3>
+          <p>Share your unique form link (like formsite.com/f/ABC123/) anywhere — websites, social media, or emails.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">04</div>
+        <div class="step-content">
+          <h3>Receive Submissions</h3>
+          <p>Get email notifications with full submission details. Track everything in your dashboard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2>Ready to Get Started?</h2>
+    <p>Join FormSite today and start collecting form submissions in minutes.</p>
+    {% if user.is_authenticated %}
+      <a href="{% url 'accounts:dashboard' %}" class="btn btn-primary" style="padding: 16px 40px; font-size: 1.05rem;">Go to Dashboard →</a>
+    {% else %}
+      <a href="{% url 'accounts:register' %}" class="btn btn-primary" style="padding: 16px 40px; font-size: 1.05rem;">Create Free Account →</a>
+    {% endif %}
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; {% now "Y" %} FormSite. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

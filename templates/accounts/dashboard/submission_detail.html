@@ -39,15 +39,7 @@ pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;paddin
       <div class="kv"><span class="kv-key">Device</span><span class="kv-val">{{ submission.device_type|title|default:"—" }}</span></div>
       <div class="kv"><span class="kv-key">Spam</span><span class="kv-val">{% if submission.is_spam %}<span class="badge badge-spam">Yes</span>{% else %}<span class="badge badge-ok">No</span>{% endif %}</span></div>
       <div class="kv"><span class="kv-key">Auto-response</span><span class="kv-val">{% if submission.autoresponse_sent %}<span class="badge badge-ok">Sent</span>{% else %}<span class="badge badge-pending">Not sent</span>{% endif %}</span></div>
-      <div class="kv"><span class="kv-key">Webhook</span><span class="kv-val">{% if submission.webhook_sent %}<span class="badge badge-ok">Sent</span>{% else %}<span class="badge badge-pending">Not sent</span>{% endif %}</span></div>
     </div>
   </div>
 </div>
-
-{% if submission.user_agent %}
-<div class="card">
-  <div class="card-header"><h2>🌐 User agent</h2></div>
-  <div class="card-body"><pre>{{ submission.user_agent }}</pre></div>
-</div>
-{% endif %}
 {% endblock %}

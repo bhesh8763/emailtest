@@ -178,14 +178,14 @@
       <span class="badge {% if submission.autoresponse_sent %}sent{% else %}pending{% endif %}">
         {% if submission.autoresponse_sent %}✓{% else %}⏳{% endif %} Auto-response
       </span>
-      <span class="badge {% if submission.webhook_sent %}sent{% else %}pending{% endif %}">
+      {% comment %} <span class="badge {% if submission.webhook_sent %}sent{% else %}pending{% endif %}">
         {% if submission.webhook_sent %}✓{% else %}⏳{% endif %} Webhook
-      </span>
+      </span> {% endcomment %}
     </div>
     {% endif %}
 
-    <a href="{% url 'contact:contact' %}" class="back-link">
-      ← Send another message
+    <a href="/" class="back-link">
+      ← Back to Home
     </a>
 
   </div>

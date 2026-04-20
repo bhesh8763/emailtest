@@ -34,32 +34,20 @@ class FormConfigForm(forms.ModelForm):
             'email_bcc',
             'autoresponse_subject',
             'autoresponse_body',
-            'redirect_url',
-            'webhook_url',
         ]
         labels = {
             'email_to': 'Delivery email',
             'email_bcc': 'BCC addresses',
             'autoresponse_subject': 'Auto-response subject',
             'autoresponse_body': 'Auto-response body',
-            'redirect_url': 'Custom redirect URL',
-            'webhook_url': 'Webhook URL',
         }
         widgets = {
             'autoresponse_body': forms.Textarea(attrs={'rows': 7}),
             'email_bcc': forms.TextInput(
                 attrs={'placeholder': 'colleague@example.com, manager@example.com'}
             ),
-            'redirect_url': forms.URLInput(
-                attrs={'placeholder': 'https://yoursite.com/thank-you'}
-            ),
-            'webhook_url': forms.URLInput(
-                attrs={'placeholder': 'https://hooks.zapier.com/...'}
-            ),
         }
         help_texts = {
             'email_bcc': 'Comma-separated. Recipients are hidden from each other.',
             'autoresponse_body': 'Available placeholders: {name}, {subject}, {message}',
-            'redirect_url': 'Leave blank to use the built-in thank-you page.',
-            'webhook_url': 'Leave blank to disable. Receives full submission as JSON.',
         }

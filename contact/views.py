@@ -1,6 +1,7 @@
 import logging
-from datetime import datetime, timezone
+from datetime import datetime
 from django.conf import settings
+from django.utils import timezone
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
@@ -134,7 +135,7 @@ def contact_view(request):
 
         if form.is_valid():
             data = form.cleaned_data
-            now = datetime.now(timezone.utc)
+            now = timezone.now()
 
             # Detect device 
             user_agent = request.META.get('HTTP_USER_AGENT', '')
@@ -227,7 +228,7 @@ def public_form_view(request, identifier):
 
         if form.is_valid():
             data = form.cleaned_data
-            now = datetime.now(timezone.utc)
+            now = timezone.now()
 
             user_agent = request.META.get('HTTP_USER_AGENT', '')
             device = data.get('device_type') or detect_device(user_agent)

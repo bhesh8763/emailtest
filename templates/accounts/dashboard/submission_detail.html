@@ -33,7 +33,7 @@ pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;paddin
   <div class="card">
     <div class="card-header"><h2>📍 Metadata</h2></div>
     <div class="card-body">
-      <div class="kv"><span class="kv-key">Timestamp</span><span class="kv-val">{{ submission.submitted_at|date:"Y-m-d H:i:s" }} UTC</span></div>
+      <div class="kv"><span class="kv-key">Timestamp</span><span class="kv-val">{{ submission.submitted_at|date:"Y-m-d H:i:s" }} NPT </span></div>
       <div class="kv"><span class="kv-key">IP address</span><span class="kv-val">{{ submission.ip_address|default:"—" }}</span></div>
       <div class="kv"><span class="kv-key">Location</span><span class="kv-val">{{ submission.city }}{% if submission.city and submission.country %}, {% endif %}{{ submission.country|default:"—" }}</span></div>
       <div class="kv"><span class="kv-key">Device</span><span class="kv-val">{{ submission.device_type|title|default:"—" }}</span></div>

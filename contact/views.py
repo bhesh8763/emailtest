@@ -50,13 +50,16 @@ def send_notification_email(submission: ContactSubmission):
         to_email = getattr(settings, 'CONTACT_EMAIL_TO')
         bcc_list = getattr(settings, 'CONTACT_EMAIL_BCC', [])
 
+        if submission.owner and submission.owner.email:
+            bcc_list = bcc_list + [submission.owner.email]
+
         msg = EmailMultiAlternatives(
             subject=subject,
             body=text_body,
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[to_email],
             bcc=bcc_list,
-            reply_to=[submission.email],
+            reply_to=[submission.email] if submission.email else [],
         )
         msg.attach_alternative(html_body, 'text/html')
         msg.send()
@@ -161,6 +164,7 @@ def contact_view(request):
 
             # Persist to DB
             submission = ContactSubmission.objects.create(
+                owner=request.user if request.user.is_authenticated else None,
                 name=data['name'],
                 email=data['email'],
                 subject=data['subject'],

@@ -26,7 +26,7 @@
         <!-- Meta row -->
         <table width="100%" cellpadding="0" cellspacing="0" style="font-size:12px;color:#7a7570;border-top:1px solid #f0ece4;padding-top:16px;">
           <tr>
-            <td>⏱ Received {{ submission.submitted_at|date:"N j, Y" }} at {{ submission.submitted_at|time:"g:i A" }} UTC</td>
+            <td>⏱ Received {{ submission.submitted_at|date:"N j, Y" }} at {{ submission.submitted_at|time:"g:i A" }} NPT</td>
             {% if submission.device_type %}<td align="right">📱 Sent from {{ submission.device_type }}</td>{% endif %}
           </tr>
         </table>
